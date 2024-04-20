@@ -18,7 +18,7 @@ class Tfidf:
         for filename in os.listdir(self.path):
             if(filename == '.DS_Store'):
                 continue
-            with open(os.path.join(self.path, filename), 'r') as file:
+            with open(os.path.join(self.path, filename), 'r' , encoding='utf-8') as file:
                 fileString = file.read().lower()
                 i = fileString.find('\n')
                 title = fileString[:i]
@@ -33,7 +33,7 @@ class Tfidf:
         for doc in self.documents:
             self.tf[doc.id] = {}
             for word in doc.title.split():
-                self.tf[doc.id][word] = self.tf[doc.id].get(word, 0) + 2
+                self.tf[doc.id][word] = self.tf[doc.id].get(word, 0) + 3
                 if word in self.term_occurrences:
                     self.term_occurrences[word].add(doc.id)
                 else:
@@ -49,7 +49,7 @@ class Tfidf:
         self.idf = {}
         # Calculate Inverse Document Frequency
         for word in self.term_occurrences:
-            self.idf[word] = log(len(self.documents) / (len(self.term_occurrences[word])))
+            self.idf[word] = log(1 + len(self.documents) / 1 + (len(self.term_occurrences[word])))
 
     def get_tfidf(self, sentence):
         #Pair <Float , id>
@@ -59,9 +59,15 @@ class Tfidf:
         words = [word.lower() for word in words]
         for doc_id in self.tf:
             tfidf = 0
+            wordCount = 0
             for word in words:
                 if word in self.tf[doc_id]:
-                    tfidf += self.tf[doc_id][word] * self.idf[word]
+                    wordCount += 1
+            for word in words:
+                if word in self.tf[doc_id]:
+                        tfidf += wordCount * (self.tf[doc_id][word] * self.idf[word])
+                        print((self.tf[doc_id][word] * self.idf[word]))         
+                    
             document_ranking.append((tfidf, doc_id))
         #Sort by TFIDF
         document_ranking.sort(reverse=True)
@@ -71,7 +77,7 @@ class Tfidf:
             for document in self.documents:
                 if document.id == doc[1]:
                     document.rank = doc[0]
+                    document.path = document.path.split('/')[-1]
                     fetched_documents.append(document)
                     break
-        return fetched_documents
-
+        return fetched_documents[:5]
