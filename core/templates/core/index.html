@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <script src="https://cdn.tailwindcss.com"></script>
+
+        <title>TFIDF Search Engine</title>
+    </head>
+
+    <body>
+        <h1 class="text-4xl font-semibold text-center py-6 flex flex-col">Search engine</h1>
+        <div class="w-full flex justify-center items-center" >
+            <form class="w-1/2" method="post" action=".">
+                {% csrf_token %}
+    
+                <input required id="search" name="search" type="text" value="{{ searchVal }}" class="w-[70%] mx-auto px-6 py-3 border border-gray-200 rounded-xl" />
+    
+                <button type="submit" class="py-4 px-8 text-lg bg-teal-500 hover:bg-teal-700 rounded-xl text-white">Search</button>
+    
+            </form>
+        </div>
+        
+        {% for scores in tfidf_scores %}
+            <div class="px-6 py-6 border-b border-gray-200">
+                <h2 class="text-2xl font-semibold">{{ scores.rank }}</h2>
+                <h2 class="text-2xl font-semibold">{{ scores.title }}</h2>
+                <p class="text-lg text-gray-500">{{ scores.content }}</p>
+            </div>
+        {% endfor %}
+
+
+
+    </body>
+</html>
