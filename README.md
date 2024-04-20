@@ -1,8 +1,9 @@
-For Linux / Mac - 
+# For Linux / Mac - 
     ```
     make
     ```
-For Windows -
+
+# For Windows -
     ```
     python -m venv venv
     cd venv && cd Scripts && activate && cd .. && cd ..
